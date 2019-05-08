@@ -1,0 +1,55 @@
+spring:
+  application:
+    name: message-server
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+  datasource:
+    type: com.zaxxer.hikari.HikariDataSource
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/message_server
+    username: message_server
+    password: message_server
+    hikari:
+      maximum-pool-size: 4
+  cloud:
+    stream:
+      kafka:
+        binder:
+          zkNodes: localhost:2181
+          brokers: localhost:9092
+      default:
+        contentType: application/json
+      bindings:
+        notification:
+          destination: notification
+          group: solr-gateway
+          contentType: application/json
+          consumer:
+            autoCommitOffset: false
+
+    zookeeper:
+      discovery:
+        enabled: true
+        root: /netiot/services
+      connect-string: localhost:2181
+server:
+  port: 8081
+  servlet:
+    context-path: /V1
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
